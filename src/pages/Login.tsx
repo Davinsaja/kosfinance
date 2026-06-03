@@ -180,11 +180,10 @@ export function Login({ onBack }: { onBack?: () => void }) {
             </p>
           </div>
 
-          {/* Secure DB Info Pill */}
-          <div className="inline-flex items-center gap-1.5 bg-[#4ECDC4]/10 text-[#1a6e66] border-2 border-[#1A1A1A] py-1.5 px-3 self-center md:self-start text-[10px] font-black uppercase tracking-wider mb-6 shadow-[2px_2px_0px_#1A1A1A] rounded">
-            <span className="w-2 h-2 rounded-full bg-[#4ECDC4] animate-ping" />
-            🔒 CLOUD STORAGE AKTIF & AMAN
-          </div>
+          {/* Secure DB Info Text */}
+          <p className="text-[10px] sm:text-xs font-bold text-emerald-600 flex items-center gap-1 mb-6 self-center md:self-start uppercase tracking-wider">
+            <span>🔒 Cloud Storage Aktif & Aman</span>
+          </p>
 
           {/* New Interactive Segmented Tab Control (Mobile-Friendly) */}
           {view !== 'forgot' && (

@@ -250,29 +250,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
                 survivalThreshold: data.survivalThreshold ?? defaultSettings.survivalThreshold,
                 allocations: data.allocations ?? defaultSettings.allocations,
               },
-              isConfigured: data.isConfigured !== false, // Default to true or check configuration state
+              isConfigured: data.isConfigured ?? false,
               current_balance: data.current_balance !== undefined ? Number(data.current_balance) : undefined,
             }));
           } else {
             // New user registered or signed in!
-            // Automatically write defaults to Firestore with isConfigured: true to skip onboarding directly
-            setDoc(userDocRef, {
-              allowanceAmount: defaultSettings.allowanceAmount,
-              cycleStartDate: defaultSettings.cycleStartDate,
-              survivalThreshold: defaultSettings.survivalThreshold,
-              allocations: defaultSettings.allocations,
-              isConfigured: true,
-              userId: userId,
-              current_balance: defaultSettings.allowanceAmount
-            }, { merge: true }).catch((err) => {
-              console.error("Gagal auto-initialize user settings:", err);
-            });
-
+            // Do NOT automatically skip onboarding! The user must complete the setup process.
             setState((prev) => ({
               ...prev,
               settings: defaultSettings,
-              isConfigured: true,
-              current_balance: defaultSettings.allowanceAmount,
+              isConfigured: false,
             }));
           }
           setAuthLoading(false);
@@ -775,10 +762,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       for (const s of state.splitSessions) {
         await deleteDoc(doc(db, 'users', userId, 'splitSessions', s.id));
       }
-      // 4. Delete profile settings
+      // 4. Delete all savings
+      for (const s of state.savingsTargets) {
+        await deleteDoc(doc(db, 'users', userId, 'savingsTargets', s.id));
+      }
+      // 5. Delete all calendar events
+      for (const e of state.calendarEvents) {
+        await deleteDoc(doc(db, 'users', userId, 'calendarEvents', e.id));
+      }
+      // 6. Delete profile settings
       await deleteDoc(doc(db, 'users', userId));
       
-      // 5. Delete authentication user
+      // 7. Delete authentication user
       await deleteUser(u);
     } catch (error) {
       console.error("Gagal menghapus seluruh data akun:", error);
