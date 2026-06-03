@@ -104,20 +104,52 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCF8] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#FDFCF8] flex items-center justify-center p-4 md:p-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white brutal-border brutal-shadow overflow-hidden"
+        className="max-w-4xl w-full bg-white brutal-border brutal-shadow overflow-hidden flex flex-col md:flex-row min-h-[600px]"
       >
-        <div className="p-8">
-          <div className="flex justify-center mb-6">
+        {/* Left Side: Visual/Branding Panel (Desktop only) */}
+        <div className="hidden md:flex md:w-1/2 bg-[#FFE66D] border-r-4 border-[#1A1A1A] p-10 flex-col justify-between relative overflow-hidden">
+          {/* Subtle grid pattern background */}
+          <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#1A1A1A_1px,transparent_1px),linear-gradient(to_bottom,#1A1A1A_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+          
+          <div className="relative z-10">
+            <div className="inline-block bg-[#1A1A1A] text-[#FFE66D] font-display font-black uppercase text-[10px] tracking-widest px-3 py-1.5 mb-6 brutal-border">
+              KOSFINANCE v1.0
+            </div>
+            <h2 className="text-4xl font-display font-black text-[#1A1A1A] leading-tight tracking-tight uppercase">
+              Sobat<br />Finansial<br />Anak Kos.
+            </h2>
+            <p className="text-stone-800 font-medium text-sm mt-4 leading-relaxed max-w-xs">
+              Udah bukan jamannya akhir bulan makan mie instan dua bungkus sehari. Catat, pantau, dan amankan kiriman bulanan secara cerdas!
+            </p>
+          </div>
+
+          <div className="space-y-4 relative z-10">
+            {/* mini status cards */}
+            <div className="bg-[#FDFCF8] brutal-border p-4 shadow-[3px_3px_0px_#1A1A1A] max-w-xs -rotate-1">
+              <div className="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Status Kantong Akhir Bulan</div>
+              <div className="text-sm font-display font-black text-[#FF6B6B] uppercase mt-0.5">⚠️ SIAGA I SURVIVAL</div>
+            </div>
+            
+            <div className="bg-[#4ECDC4] brutal-border p-4 shadow-[3px_3px_0px_#1A1A1A] max-w-xs rotate-1 translate-x-2">
+              <div className="text-[10px] font-bold text-[#1A1A1A]/70 uppercase tracking-wider">Tabungan Celengan</div>
+              <div className="text-sm font-display font-black text-[#1A1A1A] uppercase mt-0.5">💰 AMAN & MANDIRI</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side: Authentication Forms */}
+        <div className="w-full md:w-1/2 p-6 sm:p-10 flex flex-col justify-center">
+          <div className="flex justify-center mb-6 md:hidden">
             <div className="h-16 w-16 bg-[#FFE66D] brutal-border flex items-center justify-center">
               <Wallet className="h-8 w-8 text-[#1A1A1A]" />
             </div>
           </div>
-          <h1 className="text-3xl font-display font-bold text-center text-[#1A1A1A] mb-1 tracking-tight">KOSFINANCE</h1>
-          <p className="text-center text-stone-500 mb-8 font-medium">
+          <h1 className="text-3xl font-display font-bold text-center md:text-left text-[#1A1A1A] mb-1 tracking-tight">KOSFINANCE</h1>
+          <p className="text-center md:text-left text-stone-500 mb-8 font-medium">
             Catat keuangan kosmu, simpan selamanya
           </p>
 
@@ -153,7 +185,7 @@ export function Login() {
               <button
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full bg-[#FFE66D] text-[#1A1A1A] brutal-border font-bold py-4.5 uppercase tracking-widest hover:-translate-y-1 hover:-translate-x-0.5 hover:brutal-shadow active:translate-y-0.5 active:translate-x-0.2 px-4 transition-all flex items-center justify-center gap-3"
+                className="w-full bg-[#FFE66D] text-[#1A1A1A] brutal-border font-bold py-4 uppercase tracking-widest hover:-translate-y-1 hover:-translate-x-0.5 hover:brutal-shadow active:translate-y-0.5 active:translate-x-0.2 px-4 transition-all flex items-center justify-center gap-3 text-xs"
               >
                 <Chrome className="h-5 w-5 stroke-[2.5]" />
                 {loading ? 'Memproses...' : 'Masuk dengan Google'}
@@ -163,12 +195,12 @@ export function Login() {
               <button
                 onClick={simulateLogin}
                 type="button"
-                className="w-full bg-stone-100 hover:bg-stone-200 text-[#1A1A1A] brutal-border font-bold py-3 uppercase tracking-wider text-xs hover:-translate-y-0.5 transition-transform"
+                className="w-full bg-stone-100 hover:bg-stone-200 text-[#1A1A1A] brutal-border font-bold py-3 uppercase tracking-wider text-[10px] hover:-translate-y-0.5 transition-transform"
               >
                 ⚡ Simulasikan Aplikasi (Mode Demo/Tanpa DB) ⚡
               </button>
 
-              <div className="flex items-center gap-3 py-2 text-stone-400 font-bold uppercase tracking-wider text-xs">
+              <div className="flex items-center gap-3 py-2 text-stone-400 font-bold uppercase tracking-wider text-[10px]">
                 <div className="flex-1 h-0.5 bg-stone-200" />
                 <span>atau</span>
                 <div className="flex-1 h-0.5 bg-stone-200" />
@@ -228,7 +260,7 @@ export function Login() {
                     <button
                       type="button"
                       onClick={() => { setView('forgot'); resetFormState(); }}
-                      className="text-xs font-bold text-[#FF6B6B] hover:underline uppercase tracking-wider"
+                      className="text-[10px] font-bold text-[#FF6B6B] hover:underline uppercase tracking-wider"
                     >
                       Lupa password?
                     </button>
@@ -238,7 +270,7 @@ export function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#1A1A1A] text-white brutal-border font-bold py-4 uppercase tracking-widest hover:-translate-y-1 transition-all"
+                  className="w-full bg-[#1A1A1A] text-white brutal-border font-bold py-4 uppercase tracking-widest hover:-translate-y-1 transition-all text-xs"
                 >
                   {loading ? 'Memproses...' : view === 'login' ? 'Masuk' : 'Daftar Sekarang'}
                 </button>
@@ -294,7 +326,7 @@ export function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#1A1A1A] text-white brutal-border font-bold py-4 uppercase tracking-widest hover:-translate-y-1 transition-all"
+                  className="w-full bg-[#1A1A1A] text-white brutal-border font-bold py-4 uppercase tracking-widest hover:-translate-y-1 transition-all text-xs"
                 >
                   {loading ? 'Mengirim...' : 'Kirim Tautan Atur Ulang'}
                 </button>

@@ -28,20 +28,46 @@ export function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCF8] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#FDFCF8] flex items-center justify-center p-4 md:p-8">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white brutal-border brutal-shadow overflow-hidden"
+        className="max-w-4xl w-full bg-white brutal-border brutal-shadow overflow-hidden flex flex-col md:flex-row min-h-[550px]"
       >
-        <div className="p-8">
-          <div className="flex justify-center mb-6">
+        {/* Left Side: Setup Branding Visual Side (only on md+) */}
+        <div className="hidden md:flex md:w-1/2 bg-[#4ECDC4] border-r-4 border-[#1A1A1A] p-10 flex-col justify-between relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#1A1A1A_1px,transparent_1px),linear-gradient(to_bottom,#1A1A1A_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+          
+          <div className="relative z-10">
+            <div className="inline-block bg-[#1A1A1A] text-white font-display font-black uppercase text-[10px] tracking-widest px-3 py-1.5 mb-6 brutal-border">
+              SETUP MANDIRI
+            </div>
+            <h2 className="text-4xl font-display font-black text-[#1A1A1A] leading-tight tracking-tight uppercase">
+              SEDIKIT LAGI<br />SIAP TEMPUR!
+            </h2>
+            <p className="text-[#1A1A1A] font-medium text-sm mt-4 leading-relaxed max-w-xs">
+              KosFinance membantu menyusun batas darurat & budget bulanan otomatis agar kamu tidak keteteran di perantauan.
+            </p>
+          </div>
+
+          <div className="relative z-10">
+            <div className="bg-[#FFE66D] brutal-border p-4 shadow-[3px_3px_0px_#1A1A1A] max-w-xs rotate-[1deg]">
+              <div className="text-[10px] font-bold text-stone-700 uppercase tracking-wider">Mulai Kelola</div>
+              <div className="text-xs font-bold text-[#1A1A1A] mt-1">🗓️ Tanggal Gajian & Kiriman</div>
+              <div className="text-xs font-bold text-[#1A1A1A]">🎒 Dana Survival Darurat</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side: Setup Steps Form */}
+        <div className="w-full md:w-1/2 p-6 sm:p-10 flex flex-col justify-center">
+          <div className="flex justify-center mb-6 md:hidden">
             <div className="h-16 w-16 bg-[#FFE66D] brutal-border flex items-center justify-center">
               <Wallet className="h-8 w-8 text-[#1A1A1A]" />
             </div>
           </div>
-          <h1 className="text-3xl font-display font-bold text-center text-[#1A1A1A] mb-2 tracking-tight">Halo Anak Kos! 👋</h1>
-          <p className="text-center text-stone-500 mb-8 font-medium">
+          <h1 className="text-3xl font-display font-bold text-center md:text-left text-[#1A1A1A] mb-2 tracking-tight">Halo Anak Kos! 👋</h1>
+          <p className="text-center md:text-left text-stone-500 mb-8 font-medium">
             Selamat datang di KosFinance. Kita setup dulu biar duit kiriman aman.
           </p>
 
@@ -78,7 +104,7 @@ export function Landing() {
                   className="w-full bg-white brutal-border py-3 px-4 text-xl font-display font-bold focus:outline-none focus:ring-4 focus:ring-[#4ECDC4]"
                   placeholder="1"
                 />
-                <p className="text-xs text-stone-500 font-medium">Siklus keuanganmu akan dihitung dari tanggal ini, bukan tanggal 1 kalender.</p>
+                <p className="text-xs text-stone-500 font-medium font-sans">Siklus keuanganmu akan dihitung dari tanggal ini, bukan tanggal 1 kalender.</p>
               </motion.div>
             )}
 
@@ -99,7 +125,7 @@ export function Landing() {
                     placeholder="100.000"
                   />
                 </div>
-                <p className="text-xs text-stone-500 font-medium">Bila saldo menyentuh angka ini sebelum kiriman berikutnya, Modus Survival akan aktif untuk menghemat.</p>
+                <p className="text-xs text-stone-500 font-medium font-sans">Bila saldo menyentuh angka ini sebelum kiriman berikutnya, Modus Survival akan aktif untuk menghemat.</p>
               </motion.div>
             )}
 
