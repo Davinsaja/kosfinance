@@ -51,6 +51,7 @@ export function Settings() {
     try {
       await deleteAccount();
       alert('Akun Anda berhasil dihapus sepenuhnya.');
+      window.location.href = '/';
     } catch (err: any) {
       console.error(err);
       setDeleteError(err.message || 'Gagal menghapus akun. Sesi Anda mungkin memerlukan masuk ulang kredo sensitif.');

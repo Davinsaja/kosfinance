@@ -250,13 +250,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
                 survivalThreshold: data.survivalThreshold ?? defaultSettings.survivalThreshold,
                 allocations: data.allocations ?? defaultSettings.allocations,
               },
-              isConfigured: data.isConfigured ?? false,
+              isConfigured: data.isConfigured !== false, // Default to true or check configuration state
               current_balance: data.current_balance !== undefined ? Number(data.current_balance) : undefined,
             }));
           } else {
+            // New user registered or signed in!
+            // Automatically write defaults to Firestore with isConfigured: true to skip onboarding directly
+            setDoc(userDocRef, {
+              allowanceAmount: defaultSettings.allowanceAmount,
+              cycleStartDate: defaultSettings.cycleStartDate,
+              survivalThreshold: defaultSettings.survivalThreshold,
+              allocations: defaultSettings.allocations,
+              isConfigured: true,
+              userId: userId,
+              current_balance: defaultSettings.allowanceAmount
+            }, { merge: true }).catch((err) => {
+              console.error("Gagal auto-initialize user settings:", err);
+            });
+
             setState((prev) => ({
               ...prev,
-              isConfigured: false,
+              settings: defaultSettings,
+              isConfigured: true,
+              current_balance: defaultSettings.allowanceAmount,
             }));
           }
           setAuthLoading(false);

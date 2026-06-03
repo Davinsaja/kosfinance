@@ -11,11 +11,13 @@ import { SplitBillDetail } from './pages/SplitBillDetail';
 import { Reports } from './pages/Reports';
 import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
+import { Welcome } from './pages/Welcome';
 import { Calendar } from './pages/Calendar';
 import { Savings } from './pages/Savings';
 
 function AppContent() {
   const { user, authLoading, state } = useStore();
+  const [showLogin, setShowLogin] = React.useState(false);
 
   if (authLoading) {
     return (
@@ -31,7 +33,10 @@ function AppContent() {
   }
 
   if (!user) {
-    return <Login />;
+    if (!showLogin) {
+      return <Welcome onGetStarted={() => setShowLogin(true)} />;
+    }
+    return <Login onBack={() => setShowLogin(false)} />;
   }
 
   if (!state.isConfigured) {
