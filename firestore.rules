@@ -1,0 +1,131 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reusable, hardened global helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation functions
+    function isValidUserSettings(data, userId) {
+      return data.userId == userId &&
+             data.allowanceAmount is number && data.allowanceAmount >= 0 &&
+             data.cycleStartDate is number && data.cycleStartDate >= 1 && data.cycleStartDate <= 31 &&
+             data.survivalThreshold is number && data.survivalThreshold >= 0 &&
+             data.isConfigured is bool &&
+             data.allocations is map &&
+             data.allocations.wajib is number &&
+             data.allocations.fleksibel is number &&
+             data.allocations.darurat is number;
+    }
+
+    function isValidTransaction(data, userId) {
+      return data.userId == userId &&
+             data.id is string &&
+             data.amount is number && data.amount > 0 &&
+             data.description is string && data.description.size() <= 200 &&
+             data.category is string && (data.category == 'wajib' || data.category == 'fleksibel' || data.category == 'darurat' || data.category == 'pemasukan') &&
+             data.date is string;
+    }
+
+    function isValidBill(data, userId) {
+      return data.userId == userId &&
+             data.id is string &&
+             data.name is string && data.name.size() <= 100 &&
+             data.amount is number && data.amount >= 0 &&
+             data.dueDate is number && data.dueDate >= 1 && data.dueDate <= 31 &&
+             data.isPaid is bool;
+    }
+
+    function isValidSplitSession(data, userId) {
+      return data.userId == userId &&
+             data.id is string &&
+             data.title is string && data.title.size() <= 100 &&
+             data.totalAmount is number && data.totalAmount >= 0 &&
+             data.date is string &&
+             data.members is list;
+    }
+
+    function isValidSavingsTarget(data, userId) {
+      return data.userId == userId &&
+             data.id is string &&
+             data.title is string && data.title.size() <= 100 &&
+             data.targetAmount is number && data.targetAmount >= 0 &&
+             data.currentAmount is number && data.currentAmount >= 0 &&
+             data.dueDate is string;
+    }
+
+    function isValidCalendarEvent(data, userId) {
+      return data.userId == userId &&
+             data.id is string &&
+             data.title is string && data.title.size() <= 200 &&
+             data.date is string &&
+             (data.type == 'reminder' || data.type == 'target' || data.type == 'info') &&
+             (!('amount' in data) || data.amount is number);
+    }
+
+    // Rules matching the blueprint collections
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserSettings(incoming(), userId);
+      allow update: if isOwner(userId) && isValidUserSettings(incoming(), userId);
+      allow delete: if isOwner(userId);
+
+      match /transactions/{transactionId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(transactionId) && isValidTransaction(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(transactionId) && isValidTransaction(incoming(), userId);
+        allow delete: if isOwner(userId) && isValidId(transactionId);
+      }
+
+      match /bills/{billId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(billId) && isValidBill(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(billId) && isValidBill(incoming(), userId);
+        allow delete: if isOwner(userId) && isValidId(billId);
+      }
+
+      match /splitSessions/{splitSessionId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(splitSessionId) && isValidSplitSession(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(splitSessionId) && isValidSplitSession(incoming(), userId);
+        allow delete: if isOwner(userId) && isValidId(splitSessionId);
+      }
+
+      match /savingsTargets/{savingsTargetId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(savingsTargetId) && isValidSavingsTarget(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(savingsTargetId) && isValidSavingsTarget(incoming(), userId);
+        allow delete: if isOwner(userId) && isValidId(savingsTargetId);
+      }
+
+      match /calendarEvents/{calendarEventId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(calendarEventId) && isValidCalendarEvent(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(calendarEventId) && isValidCalendarEvent(incoming(), userId);
+        allow delete: if isOwner(userId) && isValidId(calendarEventId);
+      }
+    }
+  }
+}

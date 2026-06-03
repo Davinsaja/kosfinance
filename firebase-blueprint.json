@@ -1,0 +1,133 @@
+{
+  "entities": {
+    "UserSettings": {
+      "title": "UserSettings",
+      "description": "User profile, configuration, and setup preferences.",
+      "type": "object",
+      "properties": {
+        "allowanceAmount": { "type": "number", "description": "Total monthly pocket money" },
+        "cycleStartDate": { "type": "number", "description": "Day of the month to start active cycle" },
+        "survivalThreshold": { "type": "number", "description": "Amount below which survival mode activates" },
+        "allocations": {
+          "type": "object",
+          "properties": {
+            "wajib": { "type": "number" },
+            "fleksibel": { "type": "number" },
+            "darurat": { "type": "number" }
+          }
+        },
+        "isConfigured": { "type": "boolean" },
+        "userId": { "type": "string" }
+      },
+      "required": ["allowanceAmount", "cycleStartDate", "survivalThreshold", "allocations", "isConfigured", "userId"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "A transaction entry in active cycle",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "amount": { "type": "number" },
+        "description": { "type": "string" },
+        "category": { "type": "string", "enum": ["wajib", "fleksibel", "darurat", "pemasukan"] },
+        "tag": { "type": "string" },
+        "date": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "amount", "description", "category", "date", "userId"]
+    },
+    "Bill": {
+      "title": "Bill",
+      "description": "A monthly due bill",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "amount": { "type": "number" },
+        "dueDate": { "type": "number" },
+        "isPaid": { "type": "boolean" },
+        "lastPaidMonth": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "name", "amount", "dueDate", "isPaid", "userId"]
+    },
+    "SplitSession": {
+      "title": "SplitSession",
+      "description": "A split bill event",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "date": { "type": "string" },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "hasPaid": { "type": "boolean" }
+            }
+          }
+        },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "title", "totalAmount", "date", "members", "userId"]
+    },
+    "SavingsTarget": {
+      "title": "SavingsTarget",
+      "description": "A savings target/dream bucket",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "targetAmount": { "type": "number" },
+        "currentAmount": { "type": "number" },
+        "dueDate": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "title", "targetAmount", "currentAmount", "dueDate", "userId"]
+    },
+    "CalendarEvent": {
+      "title": "CalendarEvent",
+      "description": "An agenda calendar event",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "date": { "type": "string" },
+        "type": { "type": "string", "enum": ["reminder", "target", "info"] },
+        "amount": { "type": "number" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "title", "date", "type", "userId"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserSettings",
+      "description": "Root location of user's personal configuration"
+    },
+    "users/{userId}/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Subcollection of transactions logged by the user"
+    },
+    "users/{userId}/bills/{billId}": {
+      "schema": "Bill",
+      "description": "Subcollection of monthly bills registered by the user"
+    },
+    "users/{userId}/splitSessions/{splitSessionId}": {
+      "schema": "SplitSession",
+      "description": "Subcollection of split bills stored by the user"
+    },
+    "users/{userId}/savingsTargets/{savingsTargetId}": {
+      "schema": "SavingsTarget",
+      "description": "Subcollection of user savings targets"
+    },
+    "users/{userId}/calendarEvents/{calendarEventId}": {
+      "schema": "CalendarEvent",
+      "description": "Subcollection of user calendar items/reminders"
+    }
+  }
+}
